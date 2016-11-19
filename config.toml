@@ -1,0 +1,43 @@
+languageCode = "en-us"
+baseurl = "https://blog.stevem.io/"
+title = "steves ramblings"
+theme = "ghostwriter"
+copyright = "Steve Morrissey"
+
+[Author]
+    name = "Steve Morrissey"
+    profile = "http://twitter.com/uberamd"
+
+[Taxonomies]
+    tag = "tags"
+    category = "categories"
+    series = "series"
+
+[Params]
+    intro = true
+    headline = "steve's ramblings"
+    description = "random things someone might read someday"
+    github = "https://github.com/uberamd"
+    linkedin = "https://linkedin.com/in/XXX/"
+    twitter = "https://twitter.com/uberamd"
+    opengraph = true
+
+[[menu.main]]
+    name = "Blog"
+    url = "/"
+    weight = 1
+
+[[menu.main]]
+    name = "Projects"
+    url = "/project/"
+    weight = 2
+
+[[menu.main]]
+    name = "Contact"
+    url = "/page/contact/"
+    weight = 3
+
+[[menu.main]]
+    name = "About"
+    url = "/page/about/"
+    weight = 4
