@@ -1,4 +1,4 @@
-FROM scratch
+FROM alpine:latest
 MAINTAINER Steve Morrissey <uberamd@gmail.com>
 
 ADD . /
