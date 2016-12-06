@@ -15,7 +15,15 @@ date = "2016-12-06T07:42:49-06:00"
 
 My job involves doing "DevOpsy" things for a company that develops and hosts APIs for clients. These APIs are the backends to various services you've likely heard of or interacted with at some point in time. Because our clients depend on the performance and availability of our exposed services, monitoring is one of our top priorities. Without flexible, reliable, code-driven monitoring we're setting ourselves up for failure.
 
-Our monitoring platform of choice is Sensu, which is absolutely fantastic. It's very different from PRTG -- you don't install it and say "Go find my devices pls" while you drink a cup of coffee. Out of box it does next to nothing, with no UI (one exists, called Uchiwa, but it isn't bundled). But the power comes from it's flexibility.  You define checks in JSON files, which get read by sensu-server processes, then scheduled out to RabbitMQ. Clients connect to RabbitMQ, grab checks applicable to their subscriptions, execute, and return the results. Finally, sensu-server processes the results and "handles" them -- fires off an email, pops a message into slack, alerts via PagerDuty, etc. Very straight forward.
+Our monitoring platform of choice is [Sensu](https://sensuapp.org/features), which is an absolutely fantastic piece of open source goodness. It's very different from PRTG -- you don't double click an MSI then say "Go find my devices pls" while you drink a cup of coffee. Out of box it does next to nothing, with no UI (one exists, called Uchiwa, but it isn't bundled). But the power comes from it's flexibility.  You define checks in JSON files, which get read by sensu-server processes, then scheduled out to RabbitMQ. Clients connect to RabbitMQ, grab checks applicable to their subscriptions, execute, and return the results. Finally, sensu-server processes the results and "handles" them -- fires off an email, pops a message into slack, alerts via PagerDuty, etc. 
+
+The driving factor behind adopting a system like this is that you get alerted on things you care about and can easily extend the functionality by writing custom code.
+
+Here is the architecture diagram from the official Sensu site to visually see the components of a Sensu environment:
+
+![sensu architecture gif](/img/sensu-diagram.gif)
+
+Note that Sensu can also act in a standalone fashion where clients schedule and execute checks on their own (without a sensu-server telling the client when to do it) and return the results for processing, however that doesn't fit with our deployment workflows as it makes adding new checks to every server a pain. The way we do it simply requires a client to subscribe to "something", and we can adjust which checks "something" subscribers need to execute with ease.
 
 ## Scaling issues strike
 
