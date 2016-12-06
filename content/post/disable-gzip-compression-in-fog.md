@@ -7,7 +7,7 @@ tags = [
   "linux"
 ]
 title = "disable gzip compression in fog"
-date = "2016-11-19T14:29:53-06:00"
+date = "2014-08-05T13:26:16-06:00"
 description = ""
 author = "Steve Morrissey"
 

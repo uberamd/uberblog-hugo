@@ -6,7 +6,7 @@ tags = [
 title = "homelab progress"
 description = "Initial Homelab Build"
 author = "Steve Morrissey"
-date = "2016-11-19T14:11:51-06:00"
+date = "2015-07-08T14:25:07-06:00"
 
 +++
 

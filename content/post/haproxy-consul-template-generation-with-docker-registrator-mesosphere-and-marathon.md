@@ -6,7 +6,7 @@ series = [ ]
 
 title = "haproxy consul template generation with docker registrator mesosphere and marathon"
 description = ""
-date = "2016-11-18T12:11:14-06:00"
+date = "2016-06-09T02:04:55-06:00"
 author = "Steve Morrissey"
 
 +++

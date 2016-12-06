@@ -5,7 +5,7 @@ tags = [
 categories = [ ]
 series = [ ]
 
-date = "2016-11-18T11:44:48-06:00"
+date = "2014-07-31T16:30:35-06:00"
 title = "First post, woo!"
 description = "BS Intro Post"
 author = "Steve Morrissey"

@@ -1,6 +1,6 @@
 +++
 title = "install vmware vcenter 6 with less than 8gb ram"
-date = "2016-11-19T14:03:31-06:00"
+date = "2015-07-30T02:10:49-06:00"
 description = ""
 author = "Steve Morrissey"
 tags = [

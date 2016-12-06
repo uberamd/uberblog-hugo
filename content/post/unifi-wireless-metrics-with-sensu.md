@@ -5,7 +5,7 @@ tags = [
   "unifi",
   "tutorial"
 ]
-date = "2016-11-18T12:19:06-06:00"
+date = "2016-05-28T03:51:15-06:00"
 title = "unifi wireless metrics with sensu"
 description = "Collecting Unifi AP stats with Sensu"
 author = "Steve Morrissey"
