@@ -27,17 +27,17 @@ copyright = "Steve Morrissey"
     url = "/"
     weight = 1
 
-[[menu.main]]
-    name = "Projects"
-    url = "/project/"
-    weight = 2
-
-[[menu.main]]
-    name = "Contact"
-    url = "/page/contact/"
-    weight = 3
-
-[[menu.main]]
-    name = "About"
-    url = "/page/about/"
-    weight = 4
+#[[menu.main]]
+#    name = "Projects"
+#    url = "/project/"
+#    weight = 2
+#
+#[[menu.main]]
+#    name = "Contact"
+#    url = "/page/contact/"
+#    weight = 3
+#
+#[[menu.main]]
+#    name = "About"
+#    url = "/page/about/"
+#    weight = 4
