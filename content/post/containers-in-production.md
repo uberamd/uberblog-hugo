@@ -49,7 +49,7 @@ We had some pretty straight-forward parameters to determine if the container str
 
 To kick things off a few EC2 instances running the ECS-optimized AMI were created. This AMI is designed for Amazons EC2 Container Service offering which gives us nice endpoints for defining what "services" want running on these instances -- in our case a bunch of sensu-client containers -- and ECS will ensure we remain in that state. We can then monitor ECS and get alerted if ECS is unable to satisfy our defined requirements, whether that be to an instance dying or a bad deploy. It also allows us to have auto-scaling groups to assist in scaling EC2 instances and container quantity during busy times without the need for manual intervention. This is important -- I hate doing things manually.
 
-With the AWS infrastructure setup I simply had to create sensu-client Docker images, and have them configurable via environment variables. No need to ship config files, etc. I drank the 12-factor kool-aid. When we develop new checks, which must exist on the sensu-client in order for them to execute, we simply push out an updated Docker image and things just work as intended.
+With the AWS infrastructure setup I simply had to create sensu-client Docker images, and have them configurable via environment variables. No need to ship config files, etc. I drank the [12-factor](https://12factor.net/) kool-aid. When we develop new sensu plugins, which must exist on the sensu-client in order for them to execute when called via check definitions, we simply push out an updated Docker image and things just work as intended.
 
 ## Success?
 
