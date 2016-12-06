@@ -1,7 +1,7 @@
 +++
 tags = [
   "docker",
-  "containers"
+  "containers",
   "devops"
 ]
 title = "containers in production"
