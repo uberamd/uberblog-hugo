@@ -1,5 +1,5 @@
 +++
-date = "2016-11-19T13:04:03-06:00"
+date = "2015-07-08T14:25:07-06:00"
 title = "issues resolving .local dns in ubuntu 15.04"
 description = ""
 author = "Steve Morrissey"
