@@ -44,3 +44,11 @@ Here are some things I plan to tackle in the next 30 days:
 * Get dedicated ESXi server off public-facing internet -- currently my dedicated ESXi host management interface is internet-facing, which isn't ideal. I need to get this moved to be over my VPN tunnel WITHOUT making it impossible to recover should I lose my tunnel and need to restore services without vcenter access
 * Implement Cisco AnyConnect VPN
 * Setup VMware Horizon View again
+
+## Finally, a picture
+
+[![homelab-image](/img/ubernets201612_lab.png)](/img/ubernets201612_lab.png)
+
+And the 10Gb networking from the FreeNAS box:
+
+[![homelab-image](/img/ubernets201612_lab_back.png)](/img/ubernets201612_lab_back.png)
