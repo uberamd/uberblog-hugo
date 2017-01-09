@@ -4,6 +4,8 @@ title = "steves ramblings"
 theme = "ghostwriter"
 copyright = "Steve Morrissey"
 
+googleAnalytics = "UA-79548225-1"
+
 [Author]
     name = "Steve Morrissey"
     profile = "http://twitter.com/uberamd"
