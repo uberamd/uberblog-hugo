@@ -1,5 +1,5 @@
 languageCode = "en-us"
-baseurl = "https://blog.stevem.io/"
+baseurl = "https://www.stevem.io/"
 title = "steves ramblings"
 theme = "ghostwriter"
 copyright = "Steve Morrissey"
