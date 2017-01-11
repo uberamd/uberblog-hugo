@@ -13,13 +13,17 @@ tags = [
   "terraform"
 ]
 date = "2017-01-10T07:23:40-06:00"
-draft = true
+draft = false
 
 +++
 
 ## Goal
 
 After following this tutorial you should end up with a functional environment running OpenShift Origin. This environment will consist of 1 Master and 4 Nodes. We will be taking advantage of the OpenShift Ansible repository to tackle a majority of the steps here. If you're looking for an in-depth guide on OpenShift see here: https://docs.openshift.org/latest/install_config/install/planning.html
+
+This is a somewhat intermediate guide as it assumes you know a bit about VMware, DNS, the command line, and OpenShift. If you're new to all of these topics you're going to have a hard time.
+
+Lets get started.
 
 ## Architecture
 
