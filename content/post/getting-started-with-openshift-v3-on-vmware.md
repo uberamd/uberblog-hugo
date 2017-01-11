@@ -19,9 +19,9 @@ draft = false
 
 ## Goal
 
-After following this tutorial you should end up with a functional environment running OpenShift Origin. This environment will consist of 1 Master and 4 Nodes. We will be taking advantage of the OpenShift Ansible repository to tackle a majority of the steps here. If you're looking for an in-depth guide on OpenShift see here: https://docs.openshift.org/latest/install_config/install/planning.html
+After following this tutorial you should end up with a functional environment running OpenShift Origin. This environment will consist of 1 Master and 4 Nodes which isn't a fully production-ready environment as ideally you will have multiple masters. We will be taking advantage of the OpenShift Ansible repository to tackle a majority of the heavy lifting, thus most of these steps fit into the "prep work" and "testing that everything worked as planned" category. If you're looking for an in-depth guide on OpenShift see here: https://docs.openshift.org/latest/install_config/install/planning.html
 
-This is a somewhat intermediate guide as it assumes you know a bit about VMware, DNS, the command line, and OpenShift. If you're new to all of these topics you're going to have a hard time.
+Do note that this is a somewhat intermediate guide as it assumes you know a bit about VMware, DNS, the command line, and OpenShift. If you're new to all of these topics you're going to have a hard time.
 
 Lets get started.
 
@@ -31,7 +31,7 @@ The OpenShift documentation provides this architecture diagram:
 
 ![openshift architecture](/img/openshift-architecture.png)
 
-Instead of using Red Hat Enterprise Linux we'll stick to CentOS 7, but the rest is pretty accurate.
+Instead of using Red Hat Enterprise Linux we'll stick to CentOS 7, but the rest is pretty accurate. We'll be creating 5 VMs during this tutorial, all running CentOS. One will be a master, 4 will be worker nodes. The master takes on more responsibility for OpenShift, including running the web UI and in our case the router. The nodes are where the application containers will live. 
 
 Here is a rundown of the infrastructure we will be deploying and the role they fit into for the architecture diagram:
 
@@ -54,6 +54,8 @@ Address:    10.7.5.20#53
 Name:    osomd01.home.local
 Address: 10.7.24.254
 ```
+
+This is important as deploying the code via Ansible will require functioanl DNS when looking up each host. If you run into an issue remember, it's always DNS.
 
 
 ## Prerequisites
@@ -115,13 +117,14 @@ So what is terraform? Taken directly from the documentation:
 
 Knowing that, what we're going to do is create a file that spells out what we want our server infrastructure to look like. It will define 5 VMs: 1x Master and 4x Nodes. It will define the IP addresses, base VMware Template to use, and how much vCPU and Memory each one should have.
 
-Assuming you already have terraform on your machine (if not you can download it [here](https://www.terraform.io/downloads.html), create a terraform file that looks somewhat like this:
+Assuming you already have terraform on your machine (if not you can download it [here](https://www.terraform.io/downloads.html), create a terraform file that looks somewhat like this (I named the file `openshift.tf`):
 ```
 # SET YOUR VCENTER CONNECTION INFORMATION HERE
 provider "vsphere" {
   user           = "YOUR_VCENTER_USERNAME"
   password       = "YOUR_VCENTER_PASSWORD"
-  vsphere_server = "YOUR_VCENTER_HOSTNAME" allow_unverified_ssl = "true"
+  vsphere_server = "YOUR_VCENTER_HOSTNAME"
+  allow_unverified_ssl = "true"
 }
 
 # DEFINE YOUR RESOURCES HERE FOLLOWING THIS TEMPLATE, REPLACING VALUES AS REQUIRED
@@ -243,7 +246,12 @@ resource "vsphere_virtual_machine" "osond04" {
 
 Obviously you will need to change a LOT of the fields including: `datacenter`, `domain`, `dns_suffixes`, `dns_servers`, `network_interface:label`, `network_interface:ipv4_address`, `network_interface:ipv4_gateway`, `disk:template`, `disk:datastore`. The `disk:template` should reference the path to the template we created in the previous step.
 
-Once you have the file created, apply it and wait for the VMs to be created:
+Once you have the file created, run terraform with the plan flag to see what it intends on changing:
+```
+terraform plan
+```
+
+Finally, apply the changes and wait for the VMs to be created:
 ```
 terraform apply
 ```
@@ -269,7 +277,7 @@ By the time you've reached this point you should have 5 VMs running, with DNS en
 
 You **must** have Ansible on your machine to continue. If you don't, download and install it (it is 100% free): http://docs.ansible.com/ansible/intro_installation.html
 
-Next, clone the OpenShift Ansible repository to your local machine and change into the directory:
+Next, clone the OpenShift Ansible repository **to your local machine** and change into the directory:
 ```
 git clone https://github.com/openshift/openshift-ansible.git
 cd openshift-ansible
@@ -309,7 +317,7 @@ OSEv3:vars | ansible_ssh_user | Indicates which user must have access over SSH t
 OSEv3:vars | openshift_master_default_subdomain | This value will be used for project DNS entries. For example, if I make a project named blog, my route will be blog.apps.home.local.
 OSEv3:vars | osm_default_node_selector | This variable overrides the node selector that projects will use by default when placing application pods
 OSEv3:vars | openshift_master_identity_providers | Here we're indicating that we want to use htpasswd file-based authentication located at `/etc/origin/htpasswd`
-nodes | openshift_node_labels | Defines Kubernetes labels applied to each node. In my case I'm in Minnesota so I have *us-central* as the `region`, with *Minneapolis* (mpls) as the `zone`. Adjust accordingly ensuring the region matches with the `osm_default_node_selector`
+nodes | openshift_node_labels | Defines Kubernetes labels applied to each node. In my case I'm in Minnesota so I have *us-central* as the `region`, with Minneapolis (*mpls*) as the `zone`. Adjust accordingly ensuring the region matches with the `osm_default_node_selector`. Yes, this does mean that you can distribute nodes across multiple regions and zones and make OpenShift aware of this. 
 
 Once you're done with the inventory file we're ready to kick off the ansible job. Do that by running (from the `openshift-ansible` directory):
 ```
@@ -351,13 +359,13 @@ osond03.home.local         : ok=152  changed=54   unreachable=0    failed=0
 osond04.home.local         : ok=152  changed=54   unreachable=0    failed=0
 ```
 
-Hopefully it completes without errors. If it did, we're in solid shape.
+Hopefully it completes without errors. If it did, we're in solid shape, OpenShift is now installed and configured!
 
 ## Step 4: Validate the nodes are visible and create user account
 
-We now need to SSH into the Master and become root (either SSH in as root, or do a `sudo -i`). This will give us access to the OpenShift command line directly from the master node, no additional authentication required.
+We now need to SSH into the Master and become root (either SSH in as root, or use another user and do a `sudo -i`). This will give us access to the OpenShift command line directly from the master node, no additional authentication required.
 
-First, lets check to verify the nodes are alive. Issue the following command:
+First, lets check to verify the nodes are alive. Issue the following command (again, as root, from the master node):
 ```
 oc get no
 ```
@@ -386,7 +394,7 @@ registry-console   172.30.100.83   <none>        9000/TCP                  10m
 router             172.30.58.70    <none>        80/TCP,443/TCP,1936/TCP   11m
 ```
 
-As you can see, the router and docker registry are running as desired. Awesome. Note down the **CLUSTER-IP** of the docker-registry service, we'll need that soon.
+As you can see, the router and docker registry are running as desired. Awesome. Note down the **CLUSTER-IP** of the `docker-registry` service, we'll need that soon.
 
 Finally, lets create a user account for access via the UI and CLI tool:
 ```
@@ -395,7 +403,7 @@ htpasswd /etc/origin/htpasswd your_username_here
 
 ## Step 5: Allow insecure access to the docker registry
 
-Now that OpenShift is deployed to the 5 machines we need to allow them to access the Docker registry "insecurely". When Docker pulls down images it prefers to do so securely, over an encrypted connection. The Docker registry OpenShift deploys, however, is not a secured registry from the perspective of the deployed nodes. SSH into **each one of the masters and nodes** (all 5 machines one by one) and ensure the **/etc/sysconfig/docker** looks like this (replacing *172.30.64.231* with the IP of the docker-registry service you obtained when running `oc get svc`):
+Now that OpenShift is deployed to the 5 machines we need to allow Docker to access the Docker registry service (mentioned above) "insecurely", which means allowing Docker to fetch images from sources fronted with a self-signed cert, or just over HTTP instead of HTTPS. The Docker registry OpenShift deploys is not a secured registry from the perspective of the Docker service on the deployed nodes. SSH into **each one of the masters and nodes** (all 5 machines one by one) and ensure the **/etc/sysconfig/docker** looks like this (replacing *172.30.64.231* with the IP of the `docker-registry` service you obtained when running `oc get svc`):
 ```
 # /etc/sysconfig/docker
 
@@ -447,7 +455,7 @@ Then restart Docker on the VM:
 systemctl restart docker
 ```
 
-Remember to perform this step on the master and ALL of the nodes.
+Remember to perform this step on the master and ALL of the nodes. If you don't do this you will run into issues when OpenShift attempts to build a container image and push it into the internal registry.
 
 ## Step 6: Login via the web interface -- Hello World!
 
