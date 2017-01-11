@@ -5,6 +5,7 @@ theme = "ghostwriter"
 copyright = "Steve Morrissey"
 
 googleAnalytics = "UA-79548225-1"
+disqusShortname = "www-stevem-io"
 
 [Author]
     name = "Steve Morrissey"
