@@ -5,8 +5,7 @@ pipeline:
     image: plugins/docker
     environment:
       - DOCKER_LAUNCH_DEBUG=false
-    repo: registry.stevem.io/uberblog-hugo/blog
-    registry: registry.stevem.io
+    repo: uberamd/uberblog
     auto_tag: true
     dockerfile: Dockerfile
     insecure: false
