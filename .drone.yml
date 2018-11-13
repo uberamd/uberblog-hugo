@@ -1,0 +1,13 @@
+debug: false
+
+pipeline:
+  docker:
+    image: plugins/docker
+    environment:
+      - DOCKER_LAUNCH_DEBUG=false
+    repo: uberamd/uberblog
+    auto_tag: true
+    dockerfile: Dockerfile
+    insecure: false
+    secrets: [ docker_username, docker_password ]
+
