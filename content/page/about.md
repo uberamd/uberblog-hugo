@@ -2,13 +2,13 @@
 author = ""
 tags = [
 ]
-date = "2016-12-06T23:04:04-06:00"
+date = "2018-11-306T22:15:04-06:00"
 title = "Steve Morrissey"
 description = "Developer/Sysadmin/Devops"
 
 +++
 
-I'm a 28 year old **systems engineer** living in **Minneapolis, MN** doing **DevOps** stuff at **[Olson](http://icfolson.com/)**.
+I'm a 30 year old **systems development engineer** living in **Minneapolis, MN** doing **automation** stuff at **[Amazon AWS](http://aws.com/)**.
 
 Graduated from the **University of Minnesota** with a B.B.A. and focus on **MIS**
 
