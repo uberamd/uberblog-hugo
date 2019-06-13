@@ -137,7 +137,8 @@ table {
   margin: 0 auto;
   position: relative;
   width: 100%;
-  max-width: 889px; }
+  /*max-width: 889px; }*/
+  }
 
 #wrapper {
   height: auto;
