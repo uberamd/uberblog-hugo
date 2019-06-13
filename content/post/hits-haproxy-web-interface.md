@@ -24,51 +24,67 @@ After playing with a few possible choices I settled on creating a Ruby on Rails 
 This application, which I call HITS (HAProxy Infrastructure Transformation Service), allows for defining rules, frontends, backends, and servers which ultimately 
 go into a building an instance of HAProxy. It also handles issuing and renewing Lets Encrypt SSL certificates, and distributing those certificates to proper endpoints. 
 
+## Technologies used
+
+Ruby on Rails for the application. Docker for building the HAProxy containers. Modified Docker API gem for doing 
+docker image builds against remote endpoints. And obviously HAProxy.
+
 ## What does it look like?
 Graphical design is a skill that I haven't been blessed with, so it's stock Bootstrap 4. 
 
 ### SSL Certificates
+From here you can issue new SSL certificates, delete existing ones, or forcefully renew. This is all enabled 
+thanks to free Lets Encrypt certificates
+
 ![hitssslcerts](/img/certificates.png)
 
-From here you can issue new SSL certificates, delete existing ones, or forcefully renew.
-
 ### Rules
+This is where you define rules (ACLs), such as SSL redirects, path based redirects, etc. These rules help 
+ensure traffic lands where it needs to -- such as having multiple websites hosted on one IP, using host 
+headers to decide which backend to land on.
+
 ![rules](/img/rules.png)
 
-This is where you define rules (ACLs), such as SSL redirects, path based redirects, etc.
 
 ### Servers
+These are backend servers that are available to add to backend pools. Backend servers run the actual applications 
+HAProxy is sending traffic towards. A single backend can have one or more backend servers
+
 ![backend servers](/img/servers.png)
 
-These are backend servers that are available to add to backend pools.
 
 ### Backends
+Backends are a collection of servers, here you can see your defined backends, and add/remove servers from them. 
+Generally, for a load balancer to actually balance traffic, you want multiple servers in a given backend.
+
 ![backends](/img/backends.png)
 ![backends2](/img/backends2.png)
 
-Backends are a collection of servers, here you can see your defined backends, and add/remove servers from them
 
 ### Frontends
+Frontends are ingress points where rules are evaluated and traffic is redirected to backends based on the results 
+on, etc. Frontends define which ports need to take in traffic, whether they are HTTP or regular TCP, and which 
+ACLs apply to each request.
+
 ![frontends](/img/frontends.png)
 ![frontend details](/img/frontend_detail.png)
 
-Frontends are ingress points where rules are evaluated and traffic is redirected to backends based on the results 
-of those rules. Here you attach rules, backends, and SSL certificates to frontends, define which ports they listen 
-on, etc.
 
 ### Hosts
-![target host](/img/target_host.png)
-
 A target host is a server running Docker which will run your desired HAProxy configurations. You attach desired 
 frontends to a host, which generates a new release of your configuration. Each configuration is a stand alone 
 docker image, complete with everything needed to handle the configured traffic workloads. The docker build 
 is automatically performed against the target host.
 
+![target host](/img/target_host.png)
+
+
 ### Deployment
+Finally, you release your generated configuration onto the host, which makes the configuration active. You can 
+easily roll back releases using the release history.
+
 ![release](/img/release.png)
 
-Finally, you release your generated configuration onto the host, which makes the configuration active. You can 
-easilly roll back releases using the release history.
 
 ## Wrap up
 
