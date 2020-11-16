@@ -1,46 +1,66 @@
 languageCode = "en-us"
 baseurl = "https://www.stevem.io/"
 title = "steves ramblings"
-theme = "ghostwriter"
+theme = "terminal"
 copyright = "Steve Morrissey"
 
 googleAnalytics = "UA-79548225-1"
 disqusShortname = "www-stevem-io"
 
-[Author]
-    name = "Steve Morrissey"
-    profile = "http://twitter.com/uberamd"
+[params]
+  # dir name of your main content (default is `content/posts`).
+  # the list of set content will show up on your index page (baseurl).
+  contentTypeName = "post"
 
-[Taxonomies]
-    tag = "tags"
-    category = "categories"
-    series = "series"
+  # ["orange", "blue", "red", "green", "pink"]
+  themeColor = "green"
 
-[Params]
-    intro = true
-    headline = "steve's ramblings"
-    description = "random things someone might read someday"
-    github = "https://github.com/uberamd"
-    linkedin = "https://linkedin.com/in/spmorrissey/"
-    twitter = "https://twitter.com/uberamd"
-    opengraph = true
+  # if you set this to 0, only submenu trigger will be visible
+  showMenuItems = 2
 
-[[menu.main]]
-    name = "Blog"
-    url = "/"
-    weight = 1
+  # show selector to switch language
+  showLanguageSelector = false
 
-#[[menu.main]]
-#    name = "Projects"
-#    url = "/project/"
-#    weight = 2
-#
-#[[menu.main]]
-#    name = "Contact"
-#    url = "/page/contact/"
-#    weight = 3
-#
-[[menu.main]]
-    name = "About"
-    url = "/page/about/"
-    weight = 4
+  # set theme to full screen width
+  fullWidthTheme = true
+
+  # center theme with default width
+  centerTheme = false
+
+  # set a custom favicon (default is a `themeColor` square)
+  # favicon = "favicon.ico"
+
+  # set post to show the last updated
+  # If you use git, you can set `enableGitInfo` to `true` and then post will automatically get the last updated
+  showLastUpdated = false
+  # Provide a string as a prefix for the last update date. By default, it looks like this: 2020-xx-xx [Updated: 2020-xx-xx] :: Author
+  # updatedDatePrefix = "Updated"
+
+  # set all headings to their default size (depending on browser settings)
+  # it's set to `true` by default
+  # oneHeadingSize = false
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    title = "steves ramblings"
+    subtitle = ""
+    owner = "Steve Morrissey"
+    keywords = ""
+    copyright = ""
+    menuMore = "Show more"
+    readMore = "Read more"
+    readOtherPosts = "Read other posts"
+    missingContentMessage = "Page not found..."
+    missingBackButtonLabel = "Back to home page"
+
+    [languages.en.params.logo]
+      logoText = "steves ramblings"
+      logoHomeLink = "/"
+
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = "about"
+        name = "About"
+        url = "/about"
+
