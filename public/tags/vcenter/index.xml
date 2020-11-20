@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vcenter on steves ramblings</title>
+    <link>https://www.stevem.io/tags/vcenter/</link>
+    <description>Recent content in vcenter on steves ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 07 Jan 2017 11:40:09 -0600</lastBuildDate><atom:link href="https://www.stevem.io/tags/vcenter/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to download Veeam Backup &amp; Replication 9.5 update 1</title>
+      <link>https://www.stevem.io/post/download-veeam-backup-and-recovery-9-5-update-1-rc/</link>
+      <pubDate>Sat, 07 Jan 2017 11:40:09 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/download-veeam-backup-and-recovery-9-5-update-1-rc/</guid>
+      <description>The general process for getting an early release of Veeam Backup &amp;amp; Replication 9.5 Update 1, which adds support for vCenter 6.5, is making a support ticket with Veeam asking for the RC.
+If you don&amp;rsquo;t want to go through that hassle you can just download it directly here: https://download2.veeam.com/veeam_backup_9.5.0.802.update1.RC.zip
+Usual disclaimer applies: is not official release software etc. etc. etc.</description>
+    </item>
+    
+  </channel>
+</rss>

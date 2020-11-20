@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cisco on steves ramblings</title>
+    <link>https://www.stevem.io/tags/cisco/</link>
+    <description>Recent content in cisco on steves ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 31 Dec 2016 11:54:35 -0600</lastBuildDate><atom:link href="https://www.stevem.io/tags/cisco/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to do ASA Hairpinning with multiple Inside networks</title>
+      <link>https://www.stevem.io/post/hairpin-asa-multiple-inside-networks/</link>
+      <pubDate>Sat, 31 Dec 2016 11:54:35 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/hairpin-asa-multiple-inside-networks/</guid>
+      <description>The issue When trying to consume a service hosted inside your network via it&amp;rsquo;s external IP address, which is also the outside address of your Cisco ASA, your connection will time out.
+Given the network diagram above we want to achieve the following:
+ openshift-builder (10.8.3.253) needs to pull down code from git server gogs.stevem.io (107.189.44.118) &amp;ndash; which according to our diagram has an internal IP of 10.8.1.254 Outside interface has 107.</description>
+    </item>
+    
+    <item>
+      <title>Fixing ASDM Login Error on Cisco ASA and ASAv</title>
+      <link>https://www.stevem.io/post/fixing-asdm-cisco-asa-and-asav/</link>
+      <pubDate>Fri, 16 Dec 2016 11:03:40 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/fixing-asdm-cisco-asa-and-asav/</guid>
+      <description>The problem &amp;ndash; ASDM Won&amp;rsquo;t launch properly When setting up a Cisco ASA Virtual Appliance (ASAv) in my lab I ran into issues getting ASDM to launch properly. When attempting to login I&amp;rsquo;d be prompted with the message &amp;ldquo;Unable to launch device manager from X.X.X.X&amp;rdquo; as seen in the screenshot below:
+The logs indicate it&amp;rsquo;s an error with how SSL is configured on the ASA:
+Application Logging Started at Thu Dec 15 15:51:05 CST 2016 --------------------------------------------- Local Launcher Version = 1.</description>
+    </item>
+    
+    <item>
+      <title>homelab progress</title>
+      <link>https://www.stevem.io/post/homelab-progress/</link>
+      <pubDate>Wed, 08 Jul 2015 14:25:07 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/homelab-progress/</guid>
+      <description>A couple months ago I started building a homelab to assist in studying for the CCNA exam. I&amp;rsquo;m a pretty hands-on learner so having hardware that I can plug into and manipulate goes a long way. The home lab started out pretty modestly: 1x Cisco 3750 (WS-C3750-48TS-S), 1x Cisco 2980G XL, and 1x Cisco 2811 router. All of this was sitting on a 15U mini floor rack.
+Over the course of the next few months I started adding components until it reached this point:</description>
+    </item>
+    
+  </channel>
+</rss>

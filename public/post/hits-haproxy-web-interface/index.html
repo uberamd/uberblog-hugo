@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>haproxy in the homelab :: steves ramblings</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="HAProxy is my homelab loadbalancer of choice due to it&amp;rsquo;s versatility and general ease of configuration. Whether it&amp;rsquo;s HTTP or just plan TCP traffic I want to land within my lab, a few tweaks to an HAProxy config is all it takes. However, as I deploy more and more random services, which I want available from the internet, having to remote into my various HAProxy ingress servers becomes a pain. Also, since I like to have isolated HAProxy instances depending on what I&amp;rsquo;m doing, yet again having to remote into boxes to make changes becomes even more tiresome." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://www.stevem.io/post/hits-haproxy-web-interface/" />
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-79548225-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+<link rel="stylesheet" href="https://www.stevem.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://www.stevem.io/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://www.stevem.io/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://www.stevem.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="haproxy in the homelab">
+<meta property="og:description" content="HAProxy is my homelab loadbalancer of choice due to it&amp;rsquo;s versatility and general ease of configuration. Whether it&amp;rsquo;s HTTP or just plan TCP traffic I want to land within my lab, a few tweaks to an HAProxy config is all it takes. However, as I deploy more and more random services, which I want available from the internet, having to remote into my various HAProxy ingress servers becomes a pain. Also, since I like to have isolated HAProxy instances depending on what I&amp;rsquo;m doing, yet again having to remote into boxes to make changes becomes even more tiresome." />
+<meta property="og:url" content="https://www.stevem.io/post/hits-haproxy-web-interface/" />
+<meta property="og:site_name" content="steves ramblings" />
+
+  
+    <meta property="og:image" content="https://www.stevem.io/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2018-11-30 22:00:00 -0600 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container full headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    steves ramblings
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://www.stevem.io/post/hits-haproxy-web-interface/">haproxy in the homelab</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2018-11-30 
+      </span>
+    
+    
+    <span class="post-author">:: Steve Morrissey</span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://www.stevem.io/tags/ruby/">ruby</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/rails/">rails</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/homelab/">homelab</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/lab/">lab</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/demo/">demo</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/hits/">hits</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p>HAProxy is my homelab loadbalancer of choice due to it&rsquo;s versatility and general ease of configuration. Whether it&rsquo;s HTTP or just plan TCP traffic I want to land
+within my lab, a few tweaks to an HAProxy config is all it takes. However, as I deploy more and more random services, which I want available from the internet,
+having to remote into my various HAProxy ingress servers becomes a pain. Also, since I like to have isolated HAProxy instances depending on what I&rsquo;m doing, yet again
+having to remote into boxes to make changes becomes even more tiresome.</p>
+<h2 id="the-solution">The Solution<a href="#the-solution" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>After playing with a few possible choices I settled on creating a Ruby on Rails application to manage deploying HAProxy configurations to my various endpoints.
+This application, which I call HITS (HAProxy Infrastructure Transformation Service), allows for defining rules, frontends, backends, and servers which ultimately
+go into a building an instance of HAProxy. It also handles issuing and renewing Lets Encrypt SSL certificates, and distributing those certificates to proper endpoints.</p>
+<h2 id="technologies-used">Technologies used<a href="#technologies-used" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Ruby on Rails for the application. Docker for building the HAProxy containers. Modified Docker API gem for doing
+docker image builds against remote endpoints. And obviously HAProxy.</p>
+<h2 id="what-does-it-look-like">What does it look like?<a href="#what-does-it-look-like" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Graphical design is a skill that I haven&rsquo;t been blessed with, so it&rsquo;s stock Bootstrap 4.</p>
+<h3 id="ssl-certificates">SSL Certificates<a href="#ssl-certificates" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>From here you can issue new SSL certificates, delete existing ones, or forcefully renew. This is all enabled
+thanks to free Lets Encrypt certificates</p>
+<p><img src="/img/certificates.png" alt="hitssslcerts"></p>
+<h3 id="rules">Rules<a href="#rules" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>This is where you define rules (ACLs), such as SSL redirects, path based redirects, etc. These rules help
+ensure traffic lands where it needs to &ndash; such as having multiple websites hosted on one IP, using host
+headers to decide which backend to land on.</p>
+<p><img src="/img/rules.png" alt="rules"></p>
+<h3 id="servers">Servers<a href="#servers" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>These are backend servers that are available to add to backend pools. Backend servers run the actual applications
+HAProxy is sending traffic towards. A single backend can have one or more backend servers</p>
+<p><img src="/img/servers.png" alt="backend servers"></p>
+<h3 id="backends">Backends<a href="#backends" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Backends are a collection of servers, here you can see your defined backends, and add/remove servers from them.
+Generally, for a load balancer to actually balance traffic, you want multiple servers in a given backend.</p>
+<p><img src="/img/backends.png" alt="backends">
+<img src="/img/backends2.png" alt="backends2"></p>
+<h3 id="frontends">Frontends<a href="#frontends" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Frontends are ingress points where rules are evaluated and traffic is redirected to backends based on the results
+on, etc. Frontends define which ports need to take in traffic, whether they are HTTP or regular TCP, and which
+ACLs apply to each request.</p>
+<p><img src="/img/frontends.png" alt="frontends">
+<img src="/img/frontend_detail.png" alt="frontend details"></p>
+<h3 id="hosts">Hosts<a href="#hosts" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>A target host is a server running Docker which will run your desired HAProxy configurations. You attach desired
+frontends to a host, which generates a new release of your configuration. Each configuration is a stand alone
+docker image, complete with everything needed to handle the configured traffic workloads. The docker build
+is automatically performed against the target host.</p>
+<p><img src="/img/target_host.png" alt="target host"></p>
+<h3 id="deployment">Deployment<a href="#deployment" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Finally, you release your generated configuration onto the host, which makes the configuration active. You can
+easily roll back releases using the release history.</p>
+<p><img src="/img/release.png" alt="release"></p>
+<h2 id="wrap-up">Wrap up<a href="#wrap-up" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>That&rsquo;s about it. This is a weekend lab project created to make it so I need to SSH into my various load balancers
+less often. It&rsquo;s not yet 100% complete (things like Where Used are not coded yet), however it is functional and
+scratches most of the itches I had around this subject.</p>
+<p>Before you say &ldquo;hey fool, why not just use Traefik or Consul&rdquo; etc. I&rsquo;ve used them, they work great, but in my
+use case I just wanted to quickly be able to toss some endpoints on a HAProxy instance in my lab, or on my
+dedicated server, and not need to think much about service discovery, having to decom endpoints when I&rsquo;m done,
+etc. This is quick and dirty &ldquo;add endpoints, remove them, press a button, and it&rsquo;s live&rdquo; solution.</p>
+<p>Thanks for reading!</p>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://www.stevem.io/post/homelab-management-with-labman/">
+                <span class="button__icon">←</span>
+                <span class="button__text">homelab management with labman</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://www.stevem.io/post/paperclip-s3-minio-rails/">
+                <span class="button__text">using rails 5 and paperclip s3 with minio</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://www.stevem.io/assets/main.js"></script>
+<script src="https://www.stevem.io/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

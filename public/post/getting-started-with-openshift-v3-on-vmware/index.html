@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>getting started with openshift v3 on vmware :: steves ramblings</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Goal After following this tutorial you should end up with a functional environment running OpenShift Origin. This environment will consist of 1 Master and 4 Nodes which isn&amp;rsquo;t a fully production-ready environment as ideally you will have multiple masters. We will be taking advantage of the OpenShift Ansible repository to tackle a majority of the heavy lifting, thus most of these steps fit into the &amp;ldquo;prep work&amp;rdquo; and &amp;ldquo;testing that everything worked as planned&amp;rdquo; category." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://www.stevem.io/post/getting-started-with-openshift-v3-on-vmware/" />
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-79548225-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+
+<link rel="stylesheet" href="https://www.stevem.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://www.stevem.io/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://www.stevem.io/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://www.stevem.io/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="getting started with openshift v3 on vmware">
+<meta property="og:description" content="From nothing to OpenShift in a bunch of steps!" />
+<meta property="og:url" content="https://www.stevem.io/post/getting-started-with-openshift-v3-on-vmware/" />
+<meta property="og:site_name" content="steves ramblings" />
+
+  
+    <meta property="og:image" content="https://www.stevem.io/img/favicon/green.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2017-01-10 07:23:40 -0600 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container full headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    steves ramblings
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://www.stevem.io/post/getting-started-with-openshift-v3-on-vmware/">getting started with openshift v3 on vmware</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2017-01-10 
+      </span>
+    
+    
+    <span class="post-author">:: Steve Morrissey</span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://www.stevem.io/tags/homelab/">homelab</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/tutorial/">tutorial</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/openshift/">openshift</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/origin/">origin</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/devops/">devops</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/centos/">centos</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/ansible/">ansible</a>&nbsp;
+    
+    #<a href="https://www.stevem.io/tags/terraform/">terraform</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="goal">Goal<a href="#goal" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>After following this tutorial you should end up with a functional environment running OpenShift Origin. This environment will consist of 1 Master and 4 Nodes which isn&rsquo;t a fully production-ready environment as ideally you will have multiple masters. We will be taking advantage of the OpenShift Ansible repository to tackle a majority of the heavy lifting, thus most of these steps fit into the &ldquo;prep work&rdquo; and &ldquo;testing that everything worked as planned&rdquo; category. If you&rsquo;re looking for an in-depth guide on OpenShift see here: <a href="https://docs.openshift.org/latest/install_config/install/planning.html">https://docs.openshift.org/latest/install_config/install/planning.html</a></p>
+<p>Do note that this is a somewhat intermediate guide as it assumes you know a bit about VMware, DNS, the command line, and OpenShift. If you&rsquo;re new to all of these topics you&rsquo;re going to have a hard time.</p>
+<p>Lets get started.</p>
+<h2 id="architecture">Architecture<a href="#architecture" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>The OpenShift documentation provides this architecture diagram:</p>
+<p><img src="/img/openshift-architecture.png" alt="openshift architecture"></p>
+<p>Instead of using Red Hat Enterprise Linux we&rsquo;ll stick to CentOS 7, but the rest is pretty accurate. We&rsquo;ll be creating 5 VMs during this tutorial, all running CentOS. One will be a master, 4 will be worker nodes. The master takes on more responsibility for OpenShift, including running the web UI and in our case the router. The nodes are where the application containers will live.</p>
+<p>Here is a rundown of the infrastructure we will be deploying and the role they fit into for the architecture diagram:</p>
+<table>
+<thead>
+<tr>
+<th>DNS Name</th>
+<th>IP</th>
+<th>Role</th>
+<th>vCPU</th>
+<th>Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>osomd01.home.local</td>
+<td>10.7.24.254</td>
+<td>Master</td>
+<td>2</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td>osond01.home.local</td>
+<td>10.7.24.253</td>
+<td>Node</td>
+<td>2</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td>osond02.home.local</td>
+<td>10.7.24.252</td>
+<td>Node</td>
+<td>2</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td>osond03.home.local</td>
+<td>10.7.24.251</td>
+<td>Node</td>
+<td>2</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td>osond04.home.local</td>
+<td>10.7.24.250</td>
+<td>Node</td>
+<td>2</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td><strong>Totals</strong></td>
+<td></td>
+<td></td>
+<td>12</td>
+<td>20GB</td>
+</tr>
+</tbody>
+</table>
+<p>The DNS names follow this pattern: <code>oso</code> (openshift origin) <code>m|n</code> (master or node) <code>d</code> (development) <code>01</code> (box number). I went ahead and created DNS entries for each of these entities, and verified they are correct using nslookup:</p>
+<pre><code>$ nslookup osomd01.home.local
+Server:        10.7.5.20
+Address:    10.7.5.20#53
+
+Name:    osomd01.home.local
+Address: 10.7.24.254
+</code></pre><p>This is important as deploying the code via Ansible will require functioanl DNS when looking up each host. If you run into an issue remember, it&rsquo;s always DNS.</p>
+<h2 id="prerequisites">Prerequisites<a href="#prerequisites" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>In order to properly follow this tutorial you will need a few things:</p>
+<ul>
+<li>VMware ESXi host(s)</li>
+<li>vCenter (optional)</li>
+<li>Terraform (optional)</li>
+<li>Ansible installed &ldquo;locally&rdquo;</li>
+<li>Functional DNS</li>
+<li>git (to clone <code>https://github.com/openshift/openshift-ansible</code>)</li>
+</ul>
+<p>The reason vCenter and Terraform are optional is because I personally use <code>terraform</code> to deploy VMs through vCenter, but it can also just be done by cloning out a template manually, it&rsquo;s just a convenience thing.</p>
+<h2 id="step-1-create-the-centos-7-base-image-optional">Step 1: Create the CentOS 7 base image (optional)<a href="#step-1-create-the-centos-7-base-image-optional" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><em>You can skip this step if you already have a CentOS 7 template you deploy through VMware, where root can login with your SSH key</em></p>
+<p>To begin, install CentOS 7 via the x86_64 Minimal ISO (<a href="https://www.centos.org/download/)">https://www.centos.org/download/)</a>. I&rsquo;m assuming you know what to do here: download the ISO, upload it to your datastore in vCenter, create a new VM, and basically &ldquo;next&rdquo; your way through the install. Do create a user account with the administrator box checked.</p>
+<p>Once the install is finished, SSH into the new VM and install updates (<code>sudo yum update -y</code>), reboot, SSH in again, and install some required packages:</p>
+<pre><code>sudo yum install -y open-vm-tools perl net-tools
+</code></pre><p>Now that the Open VM Tools are installed, we need to copy our SSH key over to the root user so ansible can get in without a password. <strong>From your local machine</strong> (where you will be launching the OpenShift install from), do a:</p>
+<pre><code>ssh-copy-id root@10.7.24.2
+</code></pre><p>Where <code>10.7.24.2</code> is the IP address of the CentOS 7 template we&rsquo;re building out. If you don&rsquo;t have <code>ssh-copy-id</code> installed and you&rsquo;re on a Mac, just do a <code>brew install ssh-copy-id</code>. And if you&rsquo;re on a Mac and don&rsquo;t have <a href="http://brew.sh/">Homebrew</a> installed, install that as well, <code>brew install ssh-copy-id</code>, then do the previous step.</p>
+<p>Ensure you can SSH into the box as root using your key (no password):</p>
+<pre><code>ssh root@10.7.24.2
+</code></pre><p>Next we need to do some general cleanup of the machine by deleting the UID from the network interface:</p>
+<pre><code>sed -i '/^\(HWADDR\|UUID\)=/d' /etc/sysconfig/network-scripts/ifcfg-e*
+sed -i -e 's@^ONBOOT=&quot;no@ONBOOT=&quot;yes@' /etc/sysconfig/network-scripts/ifcfg-e*
+</code></pre><p>Finally shut the system down as no further changes are required:</p>
+<pre><code>init 0
+</code></pre><p>In vCenter right click on the VM -&gt; Template -&gt; Convert to Template. <strong>Step 1: complete!</strong></p>
+<h2 id="step-2-define-the-infrastructure-with-terraform-optional">Step 2: Define the infrastructure with Terraform (optional)<a href="#step-2-define-the-infrastructure-with-terraform-optional" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><em>You can skip this step if you have no desire to use Terraform to create the VMs and want to make them by hand instead. Having said that, after this step it&rsquo;s assumed you will have the 5 VMs up and running</em></p>
+<p>So what is terraform? Taken directly from the documentation:</p>
+<blockquote>
+<p>Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage existing and popular service providers as well as custom in-house solutions.</p>
+</blockquote>
+<p>Knowing that, what we&rsquo;re going to do is create a file that spells out what we want our server infrastructure to look like. It will define 5 VMs: 1x Master and 4x Nodes. It will define the IP addresses, base VMware Template to use, and how much vCPU and Memory each one should have.</p>
+<p>Assuming you already have terraform on your machine (if not you can download it <a href="https://www.terraform.io/downloads.html">here</a>, create a terraform file that looks somewhat like this (I named the file <code>openshift.tf</code>):</p>
+<pre><code># SET YOUR VCENTER CONNECTION INFORMATION HERE
+provider &quot;vsphere&quot; {
+  user           = &quot;YOUR_VCENTER_USERNAME&quot;
+  password       = &quot;YOUR_VCENTER_PASSWORD&quot;
+  vsphere_server = &quot;YOUR_VCENTER_HOSTNAME&quot;
+  allow_unverified_ssl = &quot;true&quot;
+}
+
+# DEFINE YOUR RESOURCES HERE FOLLOWING THIS TEMPLATE, REPLACING VALUES AS REQUIRED
+resource &quot;vsphere_virtual_machine&quot; &quot;osomd01&quot; {
+  name   = &quot;osomd01&quot;
+  datacenter = &quot;HomeLab&quot;
+  vcpu   = 2
+  memory = 4096
+  domain = &quot;home.local&quot;
+  dns_suffixes = [&quot;home.local&quot;]
+  dns_servers = [&quot;10.7.5.20&quot;, &quot;10.7.5.30&quot;]
+
+  network_interface {
+    label = &quot;OPENSHIFT_DEV_vlan24&quot;
+    ipv4_address = &quot;10.7.24.254&quot;
+    ipv4_prefix_length = &quot;24&quot;
+    ipv4_gateway = &quot;10.7.24.1&quot;
+  }
+
+  disk {
+    template = &quot;Templates/basecentos&quot;
+    datastore = &quot;freenasblock01&quot;
+    type = &quot;thin&quot;
+  }
+}
+
+resource &quot;vsphere_virtual_machine&quot; &quot;osond01&quot; {
+  name   = &quot;osond01&quot;
+  datacenter = &quot;HomeLab&quot;
+  vcpu   = 2
+  memory = 2048
+  domain = &quot;home.local&quot;
+  dns_suffixes = [&quot;home.local&quot;]
+  dns_servers = [&quot;10.7.5.20&quot;, &quot;10.7.5.30&quot;]
+
+  network_interface {
+    label = &quot;OPENSHIFT_DEV_vlan24&quot;
+    ipv4_address = &quot;10.7.24.253&quot;
+    ipv4_prefix_length = &quot;24&quot;
+    ipv4_gateway = &quot;10.7.24.1&quot;
+  }
+
+  disk {
+    template = &quot;Templates/basecentos&quot;
+    datastore = &quot;freenasblock01&quot;
+    type = &quot;thin&quot;
+  }
+}
+
+resource &quot;vsphere_virtual_machine&quot; &quot;osond02&quot; {
+  name   = &quot;osond02&quot;
+  datacenter = &quot;HomeLab&quot;
+  vcpu   = 2
+  memory = 2048
+  domain = &quot;home.local&quot;
+  dns_suffixes = [&quot;home.local&quot;]
+  dns_servers = [&quot;10.7.5.20&quot;, &quot;10.7.5.30&quot;]
+
+  network_interface {
+    label = &quot;OPENSHIFT_DEV_vlan24&quot;
+    ipv4_address = &quot;10.7.24.252&quot;
+    ipv4_prefix_length = &quot;24&quot;
+    ipv4_gateway = &quot;10.7.24.1&quot;
+  }
+
+  disk {
+    template = &quot;Templates/basecentos&quot;
+    datastore = &quot;freenasblock01&quot;
+    type = &quot;thin&quot;
+  }
+}
+
+resource &quot;vsphere_virtual_machine&quot; &quot;osond03&quot; {
+  name   = &quot;osond03&quot;
+  datacenter = &quot;HomeLab&quot;
+  vcpu   = 2
+  memory = 2048
+  domain = &quot;home.local&quot;
+  dns_suffixes = [&quot;home.local&quot;]
+  dns_servers = [&quot;10.7.5.20&quot;, &quot;10.7.5.30&quot;]
+
+  network_interface {
+    label = &quot;OPENSHIFT_DEV_vlan24&quot;
+    ipv4_address = &quot;10.7.24.251&quot;
+    ipv4_prefix_length = &quot;24&quot;
+    ipv4_gateway = &quot;10.7.24.1&quot;
+  }
+
+  disk {
+    template = &quot;Templates/basecentos&quot;
+    datastore = &quot;freenasblock01&quot;
+    type = &quot;thin&quot;
+  }
+}
+
+resource &quot;vsphere_virtual_machine&quot; &quot;osond04&quot; {
+  name   = &quot;osond04&quot;
+  datacenter = &quot;HomeLab&quot;
+  vcpu   = 2
+  memory = 2048
+  domain = &quot;home.local&quot;
+  dns_suffixes = [&quot;home.local&quot;]
+  dns_servers = [&quot;10.7.5.20&quot;, &quot;10.7.5.30&quot;]
+
+  network_interface {
+    label = &quot;OPENSHIFT_DEV_vlan24&quot;
+    ipv4_address = &quot;10.7.24.250&quot;
+    ipv4_prefix_length = &quot;24&quot;
+    ipv4_gateway = &quot;10.7.24.1&quot;
+  }
+
+  disk {
+    template = &quot;Templates/basecentos&quot;
+    datastore = &quot;freenasblock01&quot;
+    type = &quot;thin&quot;
+  }
+}
+</code></pre><p>Obviously you will need to change a LOT of the fields including: <code>datacenter</code>, <code>domain</code>, <code>dns_suffixes</code>, <code>dns_servers</code>, <code>network_interface:label</code>, <code>network_interface:ipv4_address</code>, <code>network_interface:ipv4_gateway</code>, <code>disk:template</code>, <code>disk:datastore</code>. The <code>disk:template</code> should reference the path to the template we created in the previous step.</p>
+<p>Once you have the file created, run terraform with the plan flag to see what it intends on changing:</p>
+<pre><code>terraform plan
+</code></pre><p>Finally, apply the changes and wait for the VMs to be created:</p>
+<pre><code>terraform apply
+</code></pre><p>When the process completes you will see a message similar to this: <strong>Apply complete! Resources: 5 added, 0 changed, 0 destroyed.</strong></p>
+<p>You should now be able to ping each machine and SSH into them as the <code>root</code> user:</p>
+<pre><code>$ ping -c 1 osomd01.home.local
+PING osomd01.home.local (10.7.24.254) 56(84) bytes of data.
+64 bytes from osomd01.home.local (10.7.24.254): icmp_seq=1 ttl=63 time=0.239 ms
+
+--- osomd01.home.local ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.239/0.239/0.239/0.000 ms
+</code></pre><p>Great! Remember, you want your DNS entries created before going on!</p>
+<h2 id="step-3-download-the-openshift-ansible-playbooks">Step 3: Download the OpenShift Ansible playbooks<a href="#step-3-download-the-openshift-ansible-playbooks" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>By the time you&rsquo;ve reached this point you should have 5 VMs running, with DNS entries, and the ability to SSH from your machine into each one as the root user using key-based authentication. If you can&rsquo;t do this then stop and figure out what&rsquo;s wrong. If things are working thus far we&rsquo;re ready to download the Ansible playbooks and start cracking on the setup process.</p>
+<p>You <strong>must</strong> have Ansible on your machine to continue. If you don&rsquo;t, download and install it (it is 100% free): <a href="http://docs.ansible.com/ansible/intro_installation.html">http://docs.ansible.com/ansible/intro_installation.html</a></p>
+<p>Next, clone the OpenShift Ansible repository <strong>to your local machine</strong> and change into the directory:</p>
+<pre><code>git clone https://github.com/openshift/openshift-ansible.git
+cd openshift-ansible
+</code></pre><p>Next we need to create an inventory file for what our setup will look like. Name this file <code>openshift_inventory</code> and modify the contents to look like this (subbing values where needed):</p>
+<pre><code>[OSEv3:children]
+masters
+nodes
+
+[OSEv3:vars]
+# SSH user, this user should allow ssh based auth without requiring a password
+ansible_ssh_user=root
+
+deployment_type=origin
+openshift_master_default_subdomain=apps.home.local
+osm_default_node_selector='region=us-central'
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/htpasswd'}]
+
+[masters]
+osomd01.home.local
+
+[nodes]
+osomd01.home.local openshift_node_labels=&quot;{'region': 'infra', 'zone': 'mpls'}&quot; openshift_schedulable=true
+osond01.home.local openshift_node_labels=&quot;{'region': 'us-central', 'zone': 'mpls'}&quot; openshift_schedulable=true
+osond02.home.local openshift_node_labels=&quot;{'region': 'us-central', 'zone': 'mpls'}&quot; openshift_schedulable=true
+osond03.home.local openshift_node_labels=&quot;{'region': 'us-central', 'zone': 'mpls'}&quot; openshift_schedulable=true
+osond04.home.local openshift_node_labels=&quot;{'region': 'us-central', 'zone': 'mpls'}&quot; openshift_schedulable=true
+</code></pre><p>Here is a breakdown of the fields you probably care about:</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OSEv3:vars</td>
+<td>ansible_ssh_user</td>
+<td>Indicates which user must have access over SSH to each node. In our case we&rsquo;re using root</td>
+</tr>
+<tr>
+<td>OSEv3:vars</td>
+<td>openshift_master_default_subdomain</td>
+<td>This value will be used for project DNS entries. For example, if I make a project named blog, my route will be blog.apps.home.local.</td>
+</tr>
+<tr>
+<td>OSEv3:vars</td>
+<td>osm_default_node_selector</td>
+<td>This variable overrides the node selector that projects will use by default when placing application pods</td>
+</tr>
+<tr>
+<td>OSEv3:vars</td>
+<td>openshift_master_identity_providers</td>
+<td>Here we&rsquo;re indicating that we want to use htpasswd file-based authentication located at <code>/etc/origin/htpasswd</code></td>
+</tr>
+<tr>
+<td>nodes</td>
+<td>openshift_node_labels</td>
+<td>Defines Kubernetes labels applied to each node. In my case I&rsquo;m in Minnesota so I have <em>us-central</em> as the <code>region</code>, with Minneapolis (<em>mpls</em>) as the <code>zone</code>. Adjust accordingly ensuring the region matches with the <code>osm_default_node_selector</code>. Yes, this does mean that you can distribute nodes across multiple regions and zones and make OpenShift aware of this.</td>
+</tr>
+</tbody>
+</table>
+<p>Once you&rsquo;re done with the inventory file we&rsquo;re ready to kick off the ansible job. Do that by running (from the <code>openshift-ansible</code> directory):</p>
+<pre><code>ansible-playbook -i openshift_inventory playbooks/byo/config.yml
+</code></pre><p>Output should immediately start flying across the screen indicating ansible is churning through all the roles in the byo/config.yml playbook:</p>
+<pre><code>PLAY [Create initial host groups for localhost] ********************************
+
+TASK [include_vars] ************************************************************
+ok: [localhost]
+
+TASK [add_host] ****************************************************************
+ok: [localhost] =&gt; (item=osomd01.home.local)
+ok: [localhost] =&gt; (item=osond04.home.local)
+ok: [localhost] =&gt; (item=osond03.home.local)
+ok: [localhost] =&gt; (item=osond02.home.local)
+ok: [localhost] =&gt; (item=osond01.home.local)
+
+PLAY [Create initial host groups for all hosts] ********************************
+
+TASK [include_vars] ************************************************************
+ok: [osomd01.home.local]
+ok: [osond02.home.local]
+ok: [osond01.home.local]
+ok: [osond03.home.local]
+ok: [osond04.home.local]
+
+PLAY [Populate config host groups] *********************************************
+...
+...
+PLAY RECAP *********************************************************************
+localhost                  : ok=12   changed=0    unreachable=0    failed=0
+osomd01.home.local         : ok=436  changed=119  unreachable=0    failed=0
+osond01.home.local         : ok=152  changed=54   unreachable=0    failed=0
+osond02.home.local         : ok=152  changed=54   unreachable=0    failed=0
+osond03.home.local         : ok=152  changed=54   unreachable=0    failed=0
+osond04.home.local         : ok=152  changed=54   unreachable=0    failed=0
+</code></pre><p>Hopefully it completes without errors. If it did, we&rsquo;re in solid shape, OpenShift is now installed and configured!</p>
+<h2 id="step-4-validate-the-nodes-are-visible-and-create-user-account">Step 4: Validate the nodes are visible and create user account<a href="#step-4-validate-the-nodes-are-visible-and-create-user-account" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>We now need to SSH into the Master and become root (either SSH in as root, or use another user and do a <code>sudo -i</code>). This will give us access to the OpenShift command line directly from the master node, no additional authentication required.</p>
+<p>First, lets check to verify the nodes are alive. Issue the following command (again, as root, from the master node):</p>
+<pre><code>oc get no
+</code></pre><p>It should return back a list of nodes and their health status:</p>
+<pre><code>NAME                 STATUS    AGE
+osomd01.home.local   Ready     10m
+osond01.home.local   Ready     10m
+osond02.home.local   Ready     10m
+osond03.home.local   Ready     10m
+osond04.home.local   Ready     10m
+</code></pre><p>Perfect, everything shows as ready. Now we need to check to see if the critical services, such as the registry and router, were deployed properly. The router is what receives incoming HTTP/HTTPS requests and directs them to the proper running application, where as the registry is just a Docker registry:</p>
+<pre><code>oc get svc
+</code></pre><p>That will display a list of running services:</p>
+<pre><code>NAME               CLUSTER-IP      EXTERNAL-IP   PORT(S)                   AGE
+docker-registry    172.30.64.231   &lt;none&gt;        5000/TCP                  11m
+kubernetes         172.30.0.1      &lt;none&gt;        443/TCP,53/UDP,53/TCP     18m
+registry-console   172.30.100.83   &lt;none&gt;        9000/TCP                  10m
+router             172.30.58.70    &lt;none&gt;        80/TCP,443/TCP,1936/TCP   11m
+</code></pre><p>As you can see, the router and docker registry are running as desired. Awesome. Note down the <strong>CLUSTER-IP</strong> of the <code>docker-registry</code> service, we&rsquo;ll need that soon.</p>
+<p>Finally, lets create a user account for access via the UI and CLI tool:</p>
+<pre><code>htpasswd /etc/origin/htpasswd your_username_here
+</code></pre><h2 id="step-5-allow-insecure-access-to-the-docker-registry">Step 5: Allow insecure access to the docker registry<a href="#step-5-allow-insecure-access-to-the-docker-registry" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Now that OpenShift is deployed to the 5 machines we need to allow Docker to access the Docker registry service (mentioned above) &ldquo;insecurely&rdquo;, which means allowing Docker to fetch images from sources fronted with a self-signed cert, or just over HTTP instead of HTTPS. The Docker registry OpenShift deploys is not a secured registry from the perspective of the Docker service on the deployed nodes. SSH into <strong>each one of the masters and nodes</strong> (all 5 machines one by one) and ensure the <strong>/etc/sysconfig/docker</strong> looks like this (replacing <em>172.30.64.231</em> with the IP of the <code>docker-registry</code> service you obtained when running <code>oc get svc</code>):</p>
+<pre><code># /etc/sysconfig/docker
+
+# Modify these options if you want to change the way the docker daemon runs
+OPTIONS=' --selinux-enabled --log-driver=json-file --log-opt max-size=50m'
+if [ -z &quot;${DOCKER_CERT_PATH}&quot; ]; then
+        DOCKER_CERT_PATH=/etc/docker
+        fi
+
+# If you want to add your own registry to be used for docker search and docker
+# pull use the ADD_REGISTRY option to list a set of registries, each prepended
+# with --add-registry flag. The first registry added will be the first registry
+# searched.
+#ADD_REGISTRY='--add-registry registry.access.redhat.com'
+
+# If you want to block registries from being used, uncomment the BLOCK_REGISTRY
+# option and give it a set of registries, each prepended with --block-registry
+# flag. For example adding docker.io will stop users from downloading images
+# from docker.io
+# BLOCK_REGISTRY='--block-registry'
+
+# If you have a registry secured with https but do not have proper certs
+# distributed, you can tell docker to not look for full authorization by
+# adding the registry to the INSECURE_REGISTRY line and uncommenting it.
+# INSECURE_REGISTRY='--insecure-registry'
+INSECURE_REGISTRY='--insecure-registry 172.30.64.231:5000'
+
+# On an SELinux system, if you remove the --selinux-enabled option, you
+# also need to turn on the docker_transition_unconfined boolean.
+# setsebool -P docker_transition_unconfined 1
+
+# Location used for temporary files, such as those created by
+# docker load and build operations. Default is /var/lib/docker/tmp
+# Can be overriden by setting the following environment variable.
+# DOCKER_TMPDIR=/var/tmp
+
+# Controls the /etc/cron.daily/docker-logrotate cron job status.
+# To disable, uncomment the line below.
+# LOGROTATE=false
+#
+
+# docker-latest daemon can be used by starting the docker-latest unitfile.
+# To use docker-latest client, uncomment below line
+#DOCKERBINARY=/usr/bin/docker-latest
+</code></pre><p>Then restart Docker on the VM:</p>
+<pre><code>systemctl restart docker
+</code></pre><p>Remember to perform this step on the master and ALL of the nodes. If you don&rsquo;t do this you will run into issues when OpenShift attempts to build a container image and push it into the internal registry.</p>
+<h2 id="step-6-login-via-the-web-interface----hello-world">Step 6: Login via the web interface &ndash; Hello World!<a href="#step-6-login-via-the-web-interface----hello-world" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Now it&rsquo;s time to ditch the pesky command line (for the time being) and visit the OpenShift Origin web interface. Woohoo! You can access it by visiting:</p>
+<pre><code>https://master.server.dns.name:8443/
+</code></pre><p>In my case the URL is <code>https://osomd01.home.local:8443/</code>. If everything works you will see a login page where you can authenticate using the credentials added during step 4.</p>
+<p><img src="/img/openshift-ui-1.png" alt="openshift new project page"></p>
+<p>Click on New Project, name it hello-world, and click Create:</p>
+<p><img src="/img/openshift-ui-3.png" alt="openshift new project page"></p>
+<p>Click on Import YAML/JSON and paste this into the text area, then click create again:</p>
+<pre><code>{
+  &quot;kind&quot;: &quot;Pod&quot;,
+  &quot;apiVersion&quot;: &quot;v1&quot;,
+  &quot;metadata&quot;: {
+    &quot;name&quot;: &quot;hello-openshift&quot;,
+    &quot;creationTimestamp&quot;: null,
+    &quot;labels&quot;: {
+      &quot;name&quot;: &quot;hello-openshift&quot;
+    }
+  },
+  &quot;spec&quot;: {
+    &quot;containers&quot;: [
+      {
+        &quot;name&quot;: &quot;hello-openshift&quot;,
+        &quot;image&quot;: &quot;openshift/hello-openshift&quot;,
+        &quot;ports&quot;: [
+          {
+            &quot;containerPort&quot;: 8080,
+            &quot;protocol&quot;: &quot;TCP&quot;
+          }
+        ],
+        &quot;resources&quot;: {},
+        &quot;volumeMounts&quot;: [
+          {
+            &quot;name&quot;:&quot;tmp&quot;,
+            &quot;mountPath&quot;:&quot;/tmp&quot;
+          }
+        ],
+        &quot;terminationMessagePath&quot;: &quot;/dev/termination-log&quot;,
+        &quot;imagePullPolicy&quot;: &quot;IfNotPresent&quot;,
+        &quot;capabilities&quot;: {},
+        &quot;securityContext&quot;: {
+          &quot;capabilities&quot;: {},
+          &quot;privileged&quot;: false
+        }
+      }
+    ],
+    &quot;volumes&quot;: [
+      {
+        &quot;name&quot;:&quot;tmp&quot;,
+        &quot;emptyDir&quot;: {}
+      }
+    ],
+    &quot;restartPolicy&quot;: &quot;Always&quot;,
+    &quot;dnsPolicy&quot;: &quot;ClusterFirst&quot;,
+    &quot;serviceAccount&quot;: &quot;&quot;
+  },
+  &quot;status&quot;: {}
+}
+</code></pre><p>That will bring you to a Project view, and you should see a single running pod:</p>
+<p><img src="/img/openshift-ui-4.png" alt="openshift new project page"></p>
+<p>Great! This means we&rsquo;re able to schedule pods successfully. &ldquo;What the hell is a pod?&rdquo; is most likely what you&rsquo;re thinking right now. Here is a small summary from the <a href="http://kubernetes.io/docs/user-guide/pods/">Kubernetes documentation</a>:</p>
+<blockquote>
+<p>A pod (as in a pod of whales or pea pod) is a group of one or more containers (such as Docker containers), the shared storage for those containers, and options about how to run the containers. Pods are always co-located and co-scheduled, and run in a shared context. A pod models an application-specific “logical host” - it contains one or more application containers which are relatively tightly coupled — in a pre-container world, they would have executed on the same physical or virtual machine.</p>
+</blockquote>
+<p>I encourage you to read about Pods, Services, and Deployments as they are Kubernetes topics that relate heavily to OpenShift under the hood.</p>
+<p>Lastly, we should verify the pod is actually working. For this we need to SSH back into the Master as root. This time we&rsquo;re going to execute a command to show the various namespaces that exist:</p>
+<pre><code>oc get namespace
+</code></pre><p>Which returns the namespaces, the one we&rsquo;re interested in is the <code>hello-world</code> namespace we created:</p>
+<pre><code>NAME               STATUS    AGE
+default            Active    50m
+hello-world        Active    14m
+kube-system        Active    50m
+logging            Active    43m
+management-infra   Active    49m
+openshift          Active    50m
+openshift-infra    Active    50m
+</code></pre><p>What we want to do is get a list of pods running within that namespace. We should see only one:</p>
+<pre><code>oc --namespace=hello-world get pods
+</code></pre><pre><code>NAME              READY     STATUS    RESTARTS   AGE
+hello-openshift   1/1       Running   0          13m
+</code></pre><p>Finally, lets view the details of this pod:</p>
+<pre><code>oc --namespace=hello-world describe pod hello-openshift
+</code></pre><p>You will get a bunch of detailed output about the pod. The piece we care about is the IP and Port:</p>
+<pre><code>Name:            hello-openshift
+Namespace:        hello-world
+Security Policy:    restricted
+Node:            osond03.home.local/10.7.24.251
+Start Time:        Tue, 10 Jan 2017 19:23:29 +0000
+Labels:            name=hello-openshift
+Status:            Running
+IP:            10.131.0.2
+Controllers:        &lt;none&gt;
+Containers:
+  hello-openshift:
+    Container ID:    docker://130bbf5f71f0797364ac2654412319294bfb41363a35e4092ae35b19c11afc6e
+    Image:        openshift/hello-openshift
+    Image ID:        docker://sha256:328a278237fbb2d56cba0f71999e894d0c8cb7e01a907afca93e6e3e5a037fe2
+    Port:        8080/TCP
+    State:        Running
+      Started:        Tue, 10 Jan 2017 19:23:35 +0000
+    Ready:        True
+    Restart Count:    0
+    Volume Mounts:
+      /tmp from tmp (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-8u288 (ro)
+    Environment Variables:    &lt;none&gt;
+Conditions:
+  Type        Status
+  Initialized     True
+  Ready     True
+  PodScheduled     True
+Volumes:
+  tmp:
+    Type:    EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:
+  default-token-8u288:
+    Type:    Secret (a volume populated by a Secret)
+    SecretName:    default-token-8u288
+QoS Tier:    BestEffort
+Events:
+  FirstSeen    LastSeen    Count    From                SubobjectPath                Type        Reason        Message
+  ---------    --------    -----    ----                -------------                --------    ------        -------
+  14m        14m        1    {default-scheduler }                            Normal        Scheduled    Successfully assigned hello-openshift to osond03.home.local
+  14m        14m        1    {kubelet osond03.home.local}    spec.containers{hello-openshift}    Normal        Pulling        pulling image &quot;openshift/hello-openshift&quot;
+  14m        14m        1    {kubelet osond03.home.local}    spec.containers{hello-openshift}    Normal        Pulled        Successfully pulled image &quot;openshift/hello-openshift&quot;
+  14m        14m        1    {kubelet osond03.home.local}    spec.containers{hello-openshift}    Normal        Created        Created container with docker id 130bbf5f71f0
+  14m        14m        1    {kubelet osond03.home.local}    spec.containers{hello-openshift}    Normal        Started        Started container with docker id 130bbf5f71f0
+</code></pre><p>Running a curl against that IP and port combo should return back a success message:</p>
+<pre><code>[root@osomd01 ~]# curl 10.131.0.2:8080
+Hello OpenShift!
+</code></pre><h2 id="step-7-install-the-oc-tool-locally">Step 7: Install the oc tool locally<a href="#step-7-install-the-oc-tool-locally" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>As a final step we will want to ensure you have the OpenShift CLI tool, <code>oc</code>, installed on your local machine. The binary can be downloaded from the Releases page for OpenShift Origin: <a href="https://github.com/openshift/origin/releases">https://github.com/openshift/origin/releases</a></p>
+<p>Simply download, extract, and move into your preferred path (~/bin, /usr/local/bin, etc). We want to use this tool to login to our newly created environment:</p>
+<pre><code>oc login https://osomd01.home.local:8443
+</code></pre><p>You should see <strong>Login successful.</strong> Remember to use the credentials we created earlier. Using <code>oc</code> you can manage your projects and applications within OpenShift quite easily. Basically everything you can do via the UI you can do using <code>oc</code> as well. For example, <code>oc get pods</code> will show running pods, <code>oc get services</code> will show configured services, etc.</p>
+<p>You will notice that cluster level commands, such as <code>oc get nodes</code>, will fail due to permissions issues. This is because the user you created has restricted permissions. If you wish to increase the permission level that&rsquo;s something you can do on your own.</p>
+<h2 id="closing-thoughts">Closing thoughts<a href="#closing-thoughts" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>OpenShift is an incredibly powerful, useful tool for deploying applications and managing containers. Much of what OpenShift does under the hood is powered by Kuberentes, so learning how Kubernetes works, and it&rsquo;s terminology, is incredibly valuable.</p>
+<p>If you have any questions feel free to ask and I&rsquo;ll do by best to address them.</p>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://www.stevem.io/post/collecting-bind-dns-stats-with-sensu/">
+                <span class="button__icon">←</span>
+                <span class="button__text">collecting bind dns stats with sensu</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://www.stevem.io/post/download-veeam-backup-and-recovery-9-5-update-1-rc/">
+                <span class="button__text">How to download Veeam Backup &amp; Replication 9.5 update 1</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://www.stevem.io/assets/main.js"></script>
+<script src="https://www.stevem.io/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

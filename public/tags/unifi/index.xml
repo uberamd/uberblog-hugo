@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>unifi on steves ramblings</title>
+    <link>https://www.stevem.io/tags/unifi/</link>
+    <description>Recent content in unifi on steves ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 28 May 2016 03:51:15 -0600</lastBuildDate><atom:link href="https://www.stevem.io/tags/unifi/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>unifi wireless metrics with sensu</title>
+      <link>https://www.stevem.io/post/unifi-wireless-metrics-with-sensu/</link>
+      <pubDate>Sat, 28 May 2016 03:51:15 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/unifi-wireless-metrics-with-sensu/</guid>
+      <description>The goal of this exercise is to create a Metric for Sensu that&amp;rsquo;ll poll the Unifi controller and display the signal strength of connected wireless devices. This will allow me to get a visual of the type of connection devices in my house are getting as well as let me somewhat track the comings and goings of my devices.
+Because no scripts like this currently exist for Unifi, I had to dig in and see what my options were.</description>
+    </item>
+    
+  </channel>
+</rss>

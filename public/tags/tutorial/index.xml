@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tutorial on steves ramblings</title>
+    <link>https://www.stevem.io/tags/tutorial/</link>
+    <description>Recent content in tutorial on steves ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 27 Oct 2017 12:30:00 -0600</lastBuildDate><atom:link href="https://www.stevem.io/tags/tutorial/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>using rails 5 and paperclip s3 with minio</title>
+      <link>https://www.stevem.io/post/paperclip-s3-minio-rails/</link>
+      <pubDate>Fri, 27 Oct 2017 12:30:00 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/paperclip-s3-minio-rails/</guid>
+      <description>Odds are if you&amp;rsquo;ve landed here you&amp;rsquo;re aware of what Paperclip is and the purpose it servces within a Rails application. If not, it&amp;rsquo;s basically a gem that will handle file uploads. In my case I use it for resizing images, saving them somewhere (S3), then easily presenting them back to the user inside of a view.
+Note: This tutorial should work with any S3 compatible object storage API. Minio is just one of the more common ones.</description>
+    </item>
+    
+    <item>
+      <title>getting started with openshift v3 on vmware</title>
+      <link>https://www.stevem.io/post/getting-started-with-openshift-v3-on-vmware/</link>
+      <pubDate>Tue, 10 Jan 2017 07:23:40 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/getting-started-with-openshift-v3-on-vmware/</guid>
+      <description>Goal After following this tutorial you should end up with a functional environment running OpenShift Origin. This environment will consist of 1 Master and 4 Nodes which isn&amp;rsquo;t a fully production-ready environment as ideally you will have multiple masters. We will be taking advantage of the OpenShift Ansible repository to tackle a majority of the heavy lifting, thus most of these steps fit into the &amp;ldquo;prep work&amp;rdquo; and &amp;ldquo;testing that everything worked as planned&amp;rdquo; category.</description>
+    </item>
+    
+    <item>
+      <title>Fixing ASDM Login Error on Cisco ASA and ASAv</title>
+      <link>https://www.stevem.io/post/fixing-asdm-cisco-asa-and-asav/</link>
+      <pubDate>Fri, 16 Dec 2016 11:03:40 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/fixing-asdm-cisco-asa-and-asav/</guid>
+      <description>The problem &amp;ndash; ASDM Won&amp;rsquo;t launch properly When setting up a Cisco ASA Virtual Appliance (ASAv) in my lab I ran into issues getting ASDM to launch properly. When attempting to login I&amp;rsquo;d be prompted with the message &amp;ldquo;Unable to launch device manager from X.X.X.X&amp;rdquo; as seen in the screenshot below:
+The logs indicate it&amp;rsquo;s an error with how SSL is configured on the ASA:
+Application Logging Started at Thu Dec 15 15:51:05 CST 2016 --------------------------------------------- Local Launcher Version = 1.</description>
+    </item>
+    
+    <item>
+      <title>unifi wireless metrics with sensu</title>
+      <link>https://www.stevem.io/post/unifi-wireless-metrics-with-sensu/</link>
+      <pubDate>Sat, 28 May 2016 03:51:15 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/unifi-wireless-metrics-with-sensu/</guid>
+      <description>The goal of this exercise is to create a Metric for Sensu that&amp;rsquo;ll poll the Unifi controller and display the signal strength of connected wireless devices. This will allow me to get a visual of the type of connection devices in my house are getting as well as let me somewhat track the comings and goings of my devices.
+Because no scripts like this currently exist for Unifi, I had to dig in and see what my options were.</description>
+    </item>
+    
+    <item>
+      <title>installing sentry on ubuntu 14.04</title>
+      <link>https://www.stevem.io/post/quick-start-installing-sentry-on-ubuntu-14-04/</link>
+      <pubDate>Fri, 04 Mar 2016 17:21:56 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/quick-start-installing-sentry-on-ubuntu-14-04/</guid>
+      <description>Intro So you want to deploy Sentry in your local environment, eh? Assuming you already know what Sentry does, I&amp;rsquo;ll just give you the tagline from their website: Sentry provides real-time crash reporting for your web apps, mobile apps, and games. That&amp;rsquo;s a pretty fantastic summary. What I use it for is gathering, grouping, and alerting on Ruby on Rails application issues. It wraps errors up in to a nice, easy to digest package that you can work through, resolve, and get trend analysis on.</description>
+    </item>
+    
+    <item>
+      <title>install vmware vcenter 6 with less than 8gb ram</title>
+      <link>https://www.stevem.io/post/install-vmware-vcenter-6-with-less-than-8gb-ram/</link>
+      <pubDate>Thu, 30 Jul 2015 02:10:49 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/install-vmware-vcenter-6-with-less-than-8gb-ram/</guid>
+      <description>Perhaps the most frustrating thing about vCenter 6 is the hard 8GB of RAM requirement to simply install the application on a Windows server. To a lot of people, including myself, carving out 8GB of RAM VM in a home lab just to run vCenter for a host or two is a big ask.
+But beyond that, even if you&amp;rsquo;re using a physical computer that has exactly 8GB of installed RAM, if any of that RAM goes to an integrated video card, and thus doesn&amp;rsquo;t appear available to Windows, you&amp;rsquo;ll be blocked from running the VCenter installer as your system will have slightly less than a full 8GB of RAM.</description>
+    </item>
+    
+    <item>
+      <title>recursive unrar script for windows</title>
+      <link>https://www.stevem.io/post/recursive-unrar-script-for-windows/</link>
+      <pubDate>Tue, 05 Aug 2014 13:31:52 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/recursive-unrar-script-for-windows/</guid>
+      <description>This script, as well as similar scripts can be found on the internet but I tend to keep losing the pages that have it. So for my own archival reasons, as well as making it a little easier for others to find, here it is.
+This script uses winrar to recursively extract rar archives. This is very useful if you legally download seasons of shows and don&amp;rsquo;t want to extract each episode one by one.</description>
+    </item>
+    
+    <item>
+      <title>disable gzip compression in fog</title>
+      <link>https://www.stevem.io/post/disable-gzip-compression-in-fog/</link>
+      <pubDate>Tue, 05 Aug 2014 13:26:16 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/disable-gzip-compression-in-fog/</guid>
+      <description>This was originally posted on my old blog back in 2010ish, restored it here for archival purposes.
+Recently I changed the software the imaging server at work uses from Clonezilla to FOG. There were many reasons for the change such as a better web interface, image deployment queue, etc however one of the main things I was looking forward to was storage nodes which allows for distribution of images across multiple servers to extend storage.</description>
+    </item>
+    
+  </channel>
+</rss>

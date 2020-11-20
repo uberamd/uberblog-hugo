@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>terraform on steves ramblings</title>
+    <link>https://www.stevem.io/tags/terraform/</link>
+    <description>Recent content in terraform on steves ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 10 Jan 2017 07:23:40 -0600</lastBuildDate><atom:link href="https://www.stevem.io/tags/terraform/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>getting started with openshift v3 on vmware</title>
+      <link>https://www.stevem.io/post/getting-started-with-openshift-v3-on-vmware/</link>
+      <pubDate>Tue, 10 Jan 2017 07:23:40 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/getting-started-with-openshift-v3-on-vmware/</guid>
+      <description>Goal After following this tutorial you should end up with a functional environment running OpenShift Origin. This environment will consist of 1 Master and 4 Nodes which isn&amp;rsquo;t a fully production-ready environment as ideally you will have multiple masters. We will be taking advantage of the OpenShift Ansible repository to tackle a majority of the heavy lifting, thus most of these steps fit into the &amp;ldquo;prep work&amp;rdquo; and &amp;ldquo;testing that everything worked as planned&amp;rdquo; category.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>archive on steves ramblings</title>
+    <link>https://www.stevem.io/tags/archive/</link>
+    <description>Recent content in archive on steves ramblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 05 Aug 2014 13:26:16 -0600</lastBuildDate><atom:link href="https://www.stevem.io/tags/archive/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>disable gzip compression in fog</title>
+      <link>https://www.stevem.io/post/disable-gzip-compression-in-fog/</link>
+      <pubDate>Tue, 05 Aug 2014 13:26:16 -0600</pubDate>
+      
+      <guid>https://www.stevem.io/post/disable-gzip-compression-in-fog/</guid>
+      <description>This was originally posted on my old blog back in 2010ish, restored it here for archival purposes.
+Recently I changed the software the imaging server at work uses from Clonezilla to FOG. There were many reasons for the change such as a better web interface, image deployment queue, etc however one of the main things I was looking forward to was storage nodes which allows for distribution of images across multiple servers to extend storage.</description>
+    </item>
+    
+  </channel>
+</rss>
