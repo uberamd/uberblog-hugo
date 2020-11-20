@@ -1,9 +1,5 @@
 FROM alpine:latest
 MAINTAINER Steve Morrissey <uberamd@gmail.com>
-
-ADD --chown=1001:1001 . /
-
+ADD . /
 WORKDIR /
-USER 1001
-
 CMD ["/hugo", "--config=config.toml", "-v"]
