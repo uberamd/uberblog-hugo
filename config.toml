@@ -11,6 +11,7 @@ disqusShortname = "www-stevem-io"
   # dir name of your main content (default is `content/posts`).
   # the list of set content will show up on your index page (baseurl).
   contentTypeName = "post"
+  date_format = "02 Jan 2006"
 
   # ["orange", "blue", "red", "green", "pink"]
   themeColor = "green"
