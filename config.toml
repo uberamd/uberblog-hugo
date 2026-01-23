@@ -1,7 +1,7 @@
 languageCode = "en-us"
 baseurl = "https://www.stevem.io/"
 title = "steves ramblings"
-theme = "terminal"
+theme = "archie"
 copyright = "Steve Morrissey"
 
 googleAnalytics = "UA-79548225-1"
@@ -12,9 +12,7 @@ disqusShortname = "www-stevem-io"
   # the list of set content will show up on your index page (baseurl).
   contentTypeName = "post"
   date_format = "02 Jan 2006"
-
-  # ["orange", "blue", "red", "green", "pink"]
-  themeColor = "green"
+  mode = "dark"
 
   # if you set this to 0, only submenu trigger will be visible
   showMenuItems = 2

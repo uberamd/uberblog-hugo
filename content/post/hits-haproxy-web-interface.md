@@ -1,5 +1,5 @@
 +++
-description = ""
+description = "Looking at a web application I made to handle building and deploying custom HAProxy containers onto Linux hosts running Docker."
 author = "Steve Morrissey"
 tags = [
     "ruby",

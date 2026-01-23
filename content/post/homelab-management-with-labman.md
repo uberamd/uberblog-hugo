@@ -1,5 +1,5 @@
 +++
-description = ""
+description = "Going over a custom Ruby on Rails application made to enable end to end management of VMs within my homelab. This includes things like cloning VMware VMs, running automation workflows against them, configuring Cisco network gear, DNS zones, and more."
 author = "Steve Morrissey"
 tags = [
     "ruby",

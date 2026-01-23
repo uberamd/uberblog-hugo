@@ -1,2 +1,4 @@
 secrets.yml
 public/*
+.hugo_build.lock
+hugo
