@@ -2,7 +2,7 @@
 author = ""
 tags = [
 ]
-date = "2018-11-306T22:15:04-06:00"
+date = "2018-11-30T22:15:04-06:00"
 title = "Steve Morrissey"
 description = "Developer/Sysadmin/Devops"
 
