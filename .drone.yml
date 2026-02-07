@@ -1,13 +1,63 @@
-debug: false
+---
+kind: pipeline
+type: ssh
+name: production
 
-pipeline:
-  docker:
-    image: plugins/docker
-    environment:
-      - DOCKER_LAUNCH_DEBUG=false
-    repo: uberamd/uberblog
-    auto_tag: true
-    dockerfile: Dockerfile
-    insecure: false
-    secrets: [ docker_username, docker_password ]
+trigger:
+  event:
+  - promote
+  target:
+    include:
+    - production
 
+server:
+  host: build.lan.uctrl.net
+  user: hebron
+  password:
+    from_secret: password
+
+steps:
+- name: initialize
+  commands:
+  - git submodule update --init
+  - hugo version
+  - ln -s /home/hebron/hugo_resources/production resources
+
+- name: build
+  commands:
+  - hugo --gc -b https://www.stevem.io/
+
+- name: cleanup
+  commands:
+  - rm public/style.css
+  - rm public/assets/main.js
+  - rm public/assets/prism.js
+  - rm public/assets/style.css
+
+- name: s3-deploy
+  environment:
+    AWS_ACCESS_KEY_ID:
+      from_secret: AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY:
+      from_secret: AWS_SECRET_ACCESS_KEY
+  commands:
+  - hugo deploy
+
+- name: s3-aliases
+  environment:
+    AWS_ACCESS_KEY_ID:
+      from_secret: AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY:
+      from_secret: AWS_SECRET_ACCESS_KEY
+  commands:
+  - ./aliases_s3.sh
+
+- name: algolia-index
+  environment:
+    ALGOLIA_APP_ID: B9W2KAEOUF
+    ALGOLIA_ADMIN_KEY:
+      from_secret: ALGOLIA_ADMIN_KEY
+    ALGOLIA_INDEX_NAME: content
+    ALGOLIA_INDEX_FILE: public/algolia.json
+  commands:
+  - atomic-algolia
