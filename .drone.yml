@@ -1,14 +1,7 @@
 ---
 kind: pipeline
 type: ssh
-name: production
-
-trigger:
-  event:
-  - promote
-  target:
-    include:
-    - production
+name: default
 
 server:
   host: build.lan.uctrl.net
