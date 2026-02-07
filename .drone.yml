@@ -4,10 +4,10 @@ type: ssh
 name: default
 
 server:
-  host: build.lan.uctrl.net
-  user: hebron
+  host: 10.7.100.199
+  user: webapp
   password:
-    from_secret: password
+    from_secret: ssh_password
 
 steps:
 - name: initialize
